@@ -198,15 +198,76 @@ class MerchantSkill extends EventEmitter {
     const cors = require('cors');
     const helmet = require('helmet');
     const compression = require('compression');
+    const path = require('path');
     
     const app = express();
     const port = this.config.server?.port || 3456;
     
     // 中间件
-    app.use(helmet());
+    app.use(helmet({
+      contentSecurityPolicy: false  // 允许加载外部字体
+    }));
     app.use(cors());
     app.use(compression());
     app.use(express.json());
+    
+    // 静态文件服务（店铺前台UI）
+    app.use(express.static(path.join(__dirname, '../public')));
+    
+    // API: 获取商户信息和商品（供前端调用）
+    app.get('/api/merchant/info', async (req, res) => {
+      try {
+        // 获取商户信息
+        const merchant = await this.db.get(
+          'SELECT * FROM merchants ORDER BY created_at DESC LIMIT 1'
+        );
+        
+        // 获取商品列表
+        const products = await this.db.all(
+          'SELECT * FROM products WHERE status = ? ORDER BY created_at DESC',
+          ['active']
+        );
+        
+        res.json({
+          success: true,
+          merchant: merchant ? {
+            name: merchant.name,
+            description: merchant.description,
+            contact: {
+              email: merchant.email,
+              phone: merchant.phone
+            },
+            tags: merchant.tags ? JSON.parse(merchant.tags) : {}
+          } : {
+            name: this.config.merchant?.name || '未命名商户',
+            description: this.config.merchant?.description || '暂无描述',
+            contact: this.config.merchant?.contact || {},
+            tags: {
+              categories: this.config.merchant?.tags?.categories || [],
+              capabilities: this.config.merchant?.tags?.capabilities || [],
+              location: this.config.merchant?.tags?.location || ''
+            }
+          },
+          products: products.map(p => ({
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            price: p.price,
+            stock: p.stock,
+            category: p.category,
+            image: p.images ? JSON.parse(p.images)[0] : null
+          }))
+        });
+      } catch (error) {
+        this.logger.error('获取商户信息失败:', error);
+        res.status(500).json({ success: false, error: error.message });
+      }
+    });
+    
+    // 根路由 - 返回店铺首页
+    app.get('/', (req, res) => {
+      res.sendFile(path.join(__dirname, '../public/index.html'));
+    });
     
     // HUB回调路由
     app.post('/hub/webhook/:hubId', async (req, res) => {
@@ -239,12 +300,13 @@ class MerchantSkill extends EventEmitter {
     
     // 健康检查
     app.get('/health', (req, res) => {
-      res.json({ status: 'ok', version: '0.1.0' });
+      res.json({ status: 'ok', version: '0.1.0', type: 'merchant' });
     });
     
     // 启动服务器
     this.httpServer = app.listen(port, () => {
       this.logger.info(`🌐 HTTP服务已启动: http://localhost:${port}`);
+      this.logger.info(`🏪 店铺前台: http://localhost:${port}/`);
     });
   }
 

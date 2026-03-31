@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{merchant.name}} - IO011 商户店铺</title>
+  <meta name="description" content="{{merchant.description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366F1;
+      --primary-dark: #4F46E5;
+      --secondary: #14B8A6;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --text: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 60px 20px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.3;
+    }
+    
+    .merchant-logo {
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    
+    .tagline {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 15px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #4ADE80;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Main Content */
+    main {
+      max-width: 1200px;
+      margin: -60px auto 0;
+      padding: 0 20px 60px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Stats Bar */
+    .stats-bar {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 10px;
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+    
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    /* Section */
+    .section {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Tags */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .tag {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .tag.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    /* Products Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    
+    .product-card {
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .product-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--border) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+    
+    .product-info {
+      padding: 20px;
+    }
+    
+    .product-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    
+    .product-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .product-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .product-stock {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    /* Contact */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 12px;
+    }
+    
+    .contact-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    .contact-info h4 {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    
+    .contact-info p {
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+    
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+    
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 { font-size: 1.75rem; }
+      .products-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="merchant-logo" id="merchant-emoji">🏪</div>
+    <h1 id="merchant-name">加载中...</h1>
+    <p class="tagline" id="merchant-desc">正在连接 IO011 商户网络...</p>
+    <span class="badge">A2A 协议在线</span>
+  </header>
+
+  <main>
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-number" id="product-count">-</span>
+        <span class="stat-label">商品数量</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="category-count">-</span>
+        <span class="stat-label">经营类目</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">∞</span>
+        <span class="stat-label">数据主权</span>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="section">
+      <h2 class="section-title">🏷️ 经营类目</h2>
+      <div class="tags" id="categories">
+        <div class="loading">加载中</div>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="section">
+      <h2 class="section-title">🛍️ 热销商品</h2>
+      <div class="products-grid" id="products">
+        <div class="loading">正在加载商品</div>
+      </div>
+    </div>
+
+    <!-- Capabilities -->
+    <div class="section">
+      <h2 class="section-title">✨ 服务能力</h2>
+      <div class="tags" id="capabilities">
+        <div class="loading">加载中</div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="section">
+      <h2 class="section-title">📞 联系方式</h2>
+      <div class="contact-grid" id="contact">
+        <div class="loading">加载中</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>🏪 本店铺基于 <a href="https://www.io011.com" target="_blank">IO011 A2A 协议</a> 构建</p>
+    <p style="margin-top: 8px; font-size: 0.85rem;">数据主权 100% | AI 驱动 | 去中心化 Commerce</p>
+  </footer>
+
+  <script>
+    // 加载商户数据
+    async function loadMerchantData() {
+      try {
+        const response = await fetch('/api/merchant/info');
+        const data = await response.json();
+        
+        if (data.success) {
+          renderMerchant(data.merchant);
+          renderProducts(data.products || []);
+        } else {
+          showError('加载商户信息失败');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showError('网络连接失败，请稍后重试');
+      }
+    }
+    
+    function renderMerchant(merchant) {
+      // 商户名称和描述
+      document.getElementById('merchant-name').textContent = merchant.name || '未命名商户';
+      document.getElementById('merchant-desc').textContent = merchant.description || '暂无描述';
+      
+      // 统计
+      document.getElementById('category-count').textContent = merchant.tags?.categories?.length || 0;
+      
+      // 类目标签
+      const categoriesEl = document.getElementById('categories');
+      if (merchant.tags?.categories?.length > 0) {
+        categoriesEl.innerHTML = merchant.tags.categories.map(cat => 
+          `<span class="tag primary">${cat}</span>`
+        ).join('');
+      } else {
+        categoriesEl.innerHTML = '<span class="tag">暂无类目</span>';
+      }
+      
+      // 能力标签
+      const capabilitiesEl = document.getElementById('capabilities');
+      if (merchant.tags?.capabilities?.length > 0) {
+        capabilitiesEl.innerHTML = merchant.tags.capabilities.map(cap => 
+          `<span class="tag">${cap}</span>`
+        ).join('');
+      } else {
+        capabilitiesEl.innerHTML = '<span class="tag">标准服务</span>';
+      }
+      
+      // 联系方式
+      const contactEl = document.getElementById('contact');
+      const contacts = [];
+      if (merchant.contact?.email) {
+        contacts.push({
+          icon: '📧',
+          label: '电子邮箱',
+          value: merchant.contact.email
+        });
+      }
+      if (merchant.contact?.phone) {
+        contacts.push({
+          icon: '📱',
+          label: '联系电话',
+          value: merchant.contact.phone
+        });
+      }
+      if (merchant.tags?.location) {
+        contacts.push({
+          icon: '📍',
+          label: '所在地区',
+          value: merchant.tags.location
+        });
+      }
+      
+      if (contacts.length > 0) {
+        contactEl.innerHTML = contacts.map(c => `
+          <div class="contact-item">
+            <div class="contact-icon">${c.icon}</div>
+            <div class="contact-info">
+              <h4>${c.label}</h4>
+              <p>${c.value}</p>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        contactEl.innerHTML = '<p style="color: var(--text-muted)">暂无联系方式</p>';
+      }
+    }
+    
+    function renderProducts(products) {
+      const productsEl = document.getElementById('products');
+      document.getElementById('product-count').textContent = products.length;
+      
+      if (products.length === 0) {
+        productsEl.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <div class="empty-state-icon">📦</div>
+            <p>暂无商品</p>
+            <p style="font-size: 0.9rem; margin-top: 8px;">商户正在上新中，请稍后再来</p>
+          </div>
+        `;
+        return;
+      }
+      
+      productsEl.innerHTML = products.map(p => `
+        <div class="product-card">
+          <div class="product-image">${p.image || '📦'}</div>
+          <div class="product-info">
+            <h3 class="product-name">${p.name}</h3>
+            <p class="product-desc">${p.description || '暂无描述'}</p>
+            <div class="product-footer">
+              <span class="product-price">¥${p.price || '待定'}</span>
+              <span class="product-stock">
+                <span>●</span> 库存 ${p.stock || 0}
+              </span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function showError(message) {
+      document.querySelector('main').innerHTML = `
+        <div class="section" style="text-align: center; padding: 60px;">
+          <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
+          <p style="color: var(--text-muted);">${message}</p>
+          <button onclick="location.reload()" class="tag primary" style="margin-top: 20px; cursor: pointer;">重新加载</button>
+        </div>
+      `;
+    }
+    
+    // 页面加载完成后获取数据
+    document.addEventListener('DOMContentLoaded', loadMerchantData);
+  </script>
+</body>
+</html>

@@ -22,6 +22,17 @@ fastify.register(require('@fastify/cors'), {
 
 fastify.register(require('@fastify/websocket'));
 
+// Serve static files (frontend UI)
+fastify.register(require('@fastify/static'), {
+  root: require('path').join(__dirname, '../public'),
+  prefix: '/',
+});
+
+// Root route - serve index.html
+fastify.get('/', async (request, reply) => {
+  return reply.sendFile('index.html');
+});
+
 // Database and cache
 const db = require('./database/postgres');
 const cache = require('./cache/redis');
