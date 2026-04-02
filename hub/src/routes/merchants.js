@@ -10,6 +10,42 @@ const tagIndexer = require('../services/tag-indexer');
 
 module.exports = async function (fastify, opts) {
   
+  // Get all merchants (list)
+  fastify.get('/', async (request, reply) => {
+    try {
+      const { status, limit = 50, offset = 0 } = request.query;
+      
+      let query = 'SELECT id, name, logo_url, endpoint, tags, status, reputation, created_at FROM merchants WHERE 1=1';
+      const values = [];
+      let paramIndex = 1;
+      
+      if (status) {
+        query += ` AND status = $${paramIndex}`;
+        values.push(status);
+        paramIndex++;
+      }
+      
+      query += ` ORDER BY created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+      values.push(parseInt(limit), parseInt(offset));
+      
+      const result = await db.query(query, values);
+      
+      return {
+        merchants: result.rows,
+        total: result.rows.length,
+        limit: parseInt(limit),
+        offset: parseInt(offset)
+      };
+      
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to list merchants'
+      });
+    }
+  });
+  
   // Register new merchant
   fastify.post('/register', async (request, reply) => {
     try {
