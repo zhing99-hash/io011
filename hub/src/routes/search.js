@@ -32,11 +32,30 @@ module.exports = async function (fastify, opts) {
         });
       }
       
-      // Search by tags (try Redis first, fallback to PostgreSQL)
-let merchantIds = await tagIndexer.searchByTags(tagList, parseInt(limit) * 2);
-
-// Fallback: if Redis returns empty, query PostgreSQL directly
-if (merchantIds.length === 0) {
+      // Search by tags - 直接使用 PostgreSQL (跳过 Redis 以避免连接问题)
+      let merchantIds = [];
+      
+      try {
+        const tagConditions = tagList.map((tag, i) => 
+          `(tags->'categories' ? $${i + 1} OR tags->'capabilities' ? $${i + 1} OR tags->'location' ? $${i + 1})`
+        ).join(' OR ');
+        
+        const searchResult = await db.query(`
+          SELECT id FROM merchants 
+          WHERE (${tagConditions})
+          AND status = 'active'
+          LIMIT $${tagList.length + 1}
+        `, [...tagList, parseInt(limit) * 2]);
+        
+        merchantIds = searchResult.rows.map(r => r.id);
+      } catch (searchError) {
+        fastify.log.error('Search error:', searchError);
+        // 如果搜索失败，返回空结果而不是报错
+        merchantIds = [];
+      }
+      
+      // 保留 Redis 搜索作为备用（如果 PostgreSQL 返回空）
+      if (merchantIds.length === 0) {
  const tagConditions = tagList.map((tag, i) => 
     `(tags->'categories' ? $${i + 1} OR tags->'capabilities' ? $${i + 1})`
   ).join(' OR ');
