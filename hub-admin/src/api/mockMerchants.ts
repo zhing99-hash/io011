@@ -55,7 +55,7 @@ export const mockMerchants: Merchant[] = [
   {
     id: '3',
     name: 'TechHub',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=TH&backgroundColor=f5f5f5',
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=TH2&backgroundColor=f5f5f5',
     description: 'Smart technology solutions',
     tags: ['tech', 'smart', 'iot'],
     status: 'active',

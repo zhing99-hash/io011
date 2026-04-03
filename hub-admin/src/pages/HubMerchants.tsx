@@ -99,11 +99,20 @@ const HubMerchants: React.FC = () => {
     }
   };
 
+  // 获取 tags 数组，安全处理
+  const getTags = (merchant: Merchant) => {
+    if (!merchant.tags) return [];
+    if (typeof merchant.tags === 'string') return [merchant.tags];
+    if (Array.isArray(merchant.tags)) return merchant.tags;
+    return [];
+  };
+
   // 筛选商户
   const filteredMerchants = merchants.filter((merchant) => {
+    const tags = getTags(merchant);
     const matchesSearch = merchant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      merchant.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = !selectedCategory || merchant.tags.includes(selectedCategory);
+      tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = !selectedCategory || tags.includes(selectedCategory);
     return matchesSearch && matchesCategory;
   });
 
@@ -211,9 +220,10 @@ const HubMerchants: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-800">{merchant.name}</h3>
-                    <p className="text-sm text-gray-500">
-                      {merchant.tags.slice(0, 2).join(' · ')}
-                    </p>
+                    {/* 使用 getTags 安全获取标签 */}
+                <p className="text-sm text-gray-500">
+                  {getTags(merchant).slice(0, 2).join(' · ')}
+                </p>
                   </div>
                   {merchant.status === 'active' && (
                     <span className="px-2 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-full">
@@ -222,9 +232,9 @@ const HubMerchants: React.FC = () => {
                   )}
                 </div>
 
-                {/* Tags */}
+                {/* Tags - 使用 getTags 安全获取 */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {merchant.tags.map((tag, idx) => (
+                  {getTags(merchant).map((tag, idx) => (
                     <span
                       key={idx}
                       className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"

@@ -14,9 +14,9 @@ const Logo = () => (
 );
 
 const navLinks = [
-  { path: '/', label: '首页', exact: true, anchor: '#home' },
-  { path: '/merchants', label: '商家列表', anchor: '#merchants' },
-  { path: '/docs', label: 'API文档', anchor: '#docs' },
+  { path: '/', label: '首页', exact: true },
+  { path: '/merchants', label: '商家列表' },
+  { path: '/docs', label: 'API文档' },
 ];
 
 const bottomLinks = [
@@ -47,9 +47,9 @@ const HubLayout: React.FC = () => {
           {/* 导航链接 */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.path}
-                href={link.anchor || link.path}
+                to={link.path}
                 className={`font-medium transition-colors ${
                   isActive(link.path, link.exact)
                     ? 'text-indigo-600'
@@ -57,7 +57,7 @@ const HubLayout: React.FC = () => {
                 }`}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
           
