@@ -17,28 +17,26 @@ const Login: React.FC = () => {
 
     try {
       // 调用 Hub API 验证管理员登录
-      const response = await fetch(`${API_BASE}/api/v1/categories`, {
-        method: 'GET',
+      const response = await fetch(`${API_BASE}/api/v1/auth/admin/login`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ username, password }),
       });
 
-      if (!response.ok) {
-        throw new Error('服务不可用');
-      }
+      const data = await response.json();
 
-      // 简单验证：用户名必须有内容
-      // 实际应该有一个 /api/v1/admin/login 接口
-      if (username && password) {
-        // 登录成功（这里使用简化逻辑，实际需要后端接口）
-        localStorage.setItem('admin_username', username);
-        localStorage.setItem('admin_token', 'admin-valid-token');
-        localStorage.setItem('token', `admin-${Date.now()}`);
+      if (data.success) {
+        // 登录成功，保存 token
+        localStorage.setItem('admin_username', data.data.user.username);
+        localStorage.setItem('admin_token', data.data.token);
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('admin_user', JSON.stringify(data.data.user));
         
         navigate('/');
       } else {
-        setError('请输入用户名和密码');
+        setError(data.message || '登录失败');
       }
     } catch (err) {
       // API 不可用时，使用开发模式登录
@@ -48,6 +46,7 @@ const Login: React.FC = () => {
         localStorage.setItem('admin_username', username);
         localStorage.setItem('admin_token', 'dev-token');
         localStorage.setItem('token', 'mock-admin-token');
+        localStorage.setItem('admin_user', JSON.stringify({ username, role: 'developer' }));
         navigate('/');
       } else {
         setError('请输入用户名和密码');
@@ -61,12 +60,11 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
         <div className="text-center">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </div>
+          <img 
+            src="/logo-purple.png" 
+            alt="IO011" 
+            className="w-16 h-16 rounded-xl mx-auto mb-4 object-contain" 
+          />
           <h2 className="text-3xl font-bold text-gray-900">Hub 管理后台</h2>
           <p className="mt-2 text-sm text-gray-600">IO011 平台管理中心</p>
         </div>

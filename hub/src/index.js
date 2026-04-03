@@ -41,6 +41,9 @@ const cache = require('./cache/redis');
 fastify.register(require('./routes/merchants'), { prefix: '/api/v1/merchants' });
 fastify.register(require('./routes/search'), { prefix: '/api/v1/search' });
 fastify.register(require('./routes/categories'), { prefix: '/api/v1/categories' });
+fastify.register(require('./routes/auth'), { prefix: '/api/v1/auth' });
+fastify.register(require('./routes/orders'), { prefix: '/api/v1/orders' });
+fastify.register(require('./routes/products'), { prefix: '/api/v1/products' });
 
 // WebSocket handler for merchant connections
 fastify.register(async function (fastify) {
@@ -54,7 +57,7 @@ fastify.register(async function (fastify) {
 fastify.get('/health', async () => {
   return { 
     status: 'ok', 
-    version: '2.3.2',
+    version: '2.3.3',
     timestamp: new Date().toISOString()
   };
 });
