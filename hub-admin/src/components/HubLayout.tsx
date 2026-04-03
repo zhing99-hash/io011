@@ -136,9 +136,9 @@ const HubLayout: React.FC = () => {
               {bottomLinks.map((link, idx) => (
                 link.href ? (
                   <a key={idx} href={link.href} target="_blank" className="hover:text-white">{link.label}</a>
-                ) : link.path ? (
+                ) : (
                   <Link key={idx} to={link.path} className="hover:text-white">{link.label}</Link>
-                ) : null
+                )
               ))}
             </div>
           </div>

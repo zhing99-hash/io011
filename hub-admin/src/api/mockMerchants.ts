@@ -1,7 +1,6 @@
-// Merchant status types
-export type MerchantStatus = 'pending' | 'active' | 'rejected' | 'banned';
+// 商户状态类�?export type MerchantStatus = 'pending' | 'active' | 'rejected' | 'banned';
 
-// Merchant interface
+// 商户接口
 export interface Merchant {
   id: string;
   name: string;
@@ -20,195 +19,190 @@ export interface Merchant {
   bannedAt?: string;
 }
 
-// Mock merchant data - 10 sample merchants
-export const mockMerchants: Merchant[] = [
+// 模拟商户数据 - 10个示例商�?export const mockMerchants: Merchant[] = [
   {
     id: '1',
-    name: 'TeaHouse',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=TH&backgroundColor=f5f5f5',
-    description: 'High quality tea sets and ceramic art',
-    tags: ['tea', 'ceramic', 'handmade'],
+    name: '茶韵�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=茶韵�?backgroundColor=f5f5f5',
+    description: '专注于高品质茶具与陶瓷艺术品',
+    tags: ['茶具', '陶瓷', '手工'],
     status: 'active',
-    contactName: 'Li Xing',
+    contactName: '李先�?,
     phone: '138****8888',
-    email: 'contact@teahouse.com',
-    address: 'Beijing Chaoyang District',
+    email: 'contact@chayunxuan.com',
+    address: '北京市朝阳区建国�?8�?,
     createdAt: '2024-04-01',
-    endpoint: 'https://api.teahouse.com/v1',
+    endpoint: 'https://api.chayunxuan.com/v1',
     apiKey: 'sk_test_xxxx',
   },
   {
     id: '2',
-    name: 'CraftWorkshop',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=CW&backgroundColor=f5f5f5',
-    description: 'Handmade crafts and personalized gifts',
-    tags: ['craft', 'gift', 'custom'],
-    status: 'active',
-    contactName: 'Wang Ming',
-    phone: '139****9999',
-    email: 'hello@craftworkshop.com',
-    address: 'Shanghai Pudong District',
-    createdAt: '2024-04-05',
-    endpoint: 'https://api.craftworkshop.com/v1',
-    apiKey: 'sk_test_yyyy',
+    name: '手作工坊',
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=手作工坊&backgroundColor=f5f5f5',
+    description: '定制手工皮具与木工艺�?,
+    tags: ['手工', '定制', '皮具'],
+    status: 'pending',
+    contactName: '王女�?,
+    phone: '139****6666',
+    email: 'hello@shouzuo.com',
+    address: '上海市静安区南京西路1788�?,
+    createdAt: '2024-04-01',
+    endpoint: 'https://api.shouzuo.com/v1',
+    apiKey: 'sk_test_xxxx',
   },
   {
     id: '3',
-    name: 'TechHub',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=TH2&backgroundColor=f5f5f5',
-    description: 'Smart technology solutions',
-    tags: ['tech', 'smart', 'iot'],
-    status: 'active',
-    contactName: 'Zhang Wei',
-    phone: '136****7777',
-    email: 'info@techhub.com',
-    address: 'Shenzhen Nanshan District',
-    createdAt: '2024-04-10',
-    endpoint: 'https://api.techhub.com/v1',
-    apiKey: 'sk_test_zzzz',
+    name: '瓷艺�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=瓷艺�?backgroundColor=f5f5f5',
+    description: '传统景德镇陶瓷工艺品',
+    tags: ['陶瓷', '艺术�?, '收藏'],
+    status: 'banned',
+    contactName: '陈师�?,
+    phone: '135****5555',
+    email: 'info@ciyifang.com',
+    address: '江西省景德镇市珠山区',
+    createdAt: '2024-03-30',
+    endpoint: 'https://api.ciyifang.com/v1',
+    apiKey: 'sk_test_xxxx',
+    banReason: '违规经营，发布虚假商品信�?,
+    bannedAt: '2024-04-01',
   },
   {
     id: '4',
-    name: 'GreenOrganic',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=GO&backgroundColor=f5f5f5',
-    description: 'Organic vegetables and fruits',
-    tags: ['organic', 'food', 'healthy'],
+    name: '墨香书店',
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=墨香书店&backgroundColor=f5f5f5',
+    description: '古籍善本与文人用�?,
+    tags: ['书籍', '文化', '文房'],
     status: 'active',
-    contactName: 'Liu Yang',
-    phone: '137****6666',
-    email: 'sales@greenorganic.com',
-    address: 'Guangzhou Tianhe District',
-    createdAt: '2024-04-15',
-    endpoint: 'https://api.greenorganic.com/v1',
-    apiKey: 'sk_test_aaaa',
+    contactName: '赵先�?,
+    phone: '136****7777',
+    email: 'book@moxiang.com',
+    address: '北京市东城区南锣鼓巷',
+    createdAt: '2024-03-28',
+    endpoint: 'https://api.moxiang.com/v1',
+    apiKey: 'sk_test_xxxx',
   },
   {
     id: '5',
-    name: 'FashionCloset',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=FC&backgroundColor=f5f5f5',
-    description: 'Trendy fashion clothing',
-    tags: ['fashion', 'clothing', 'style'],
+    name: '竹韵�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=竹韵�?backgroundColor=f5f5f5',
+    description: '竹制品与中式家居用品',
+    tags: ['竹制�?, '家居', '中式'],
     status: 'active',
-    contactName: 'Chen Jing',
-    phone: '135****5555',
-    email: 'support@fashioncloset.com',
-    address: 'Hangzhou Xihu District',
-    createdAt: '2024-04-20',
-    endpoint: 'https://api.fashioncloset.com/v1',
-    apiKey: 'sk_test_bbbb',
+    contactName: '周女�?,
+    phone: '137****4444',
+    email: 'info@zhuyun.com',
+    address: '浙江省杭州市西湖�?,
+    createdAt: '2024-03-25',
+    endpoint: 'https://api.zhuyun.com/v1',
+    apiKey: 'sk_test_xxxx',
   },
   {
     id: '6',
-    name: 'SmartDrive',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=SD&backgroundColor=f5f5f5',
-    description: 'Smart car accessories',
-    tags: ['car', 'smart', 'accessories'],
-    status: 'active',
-    contactName: 'Zhou Qiang',
-    phone: '134****4444',
-    email: 'contact@smartdrive.com',
-    address: 'Chengdu Jinjiang District',
-    createdAt: '2024-04-25',
-    endpoint: 'https://api.smartdrive.com/v1',
-    apiKey: 'sk_test_cccc',
+    name: '织锦�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=织锦�?backgroundColor=f5f5f5',
+    description: '苏绣与中国传统纺织品',
+    tags: ['刺绣', '纺织�?, '非遗'],
+    status: 'pending',
+    contactName: '孙女�?,
+    phone: '138****3333',
+    email: 'contact@zhijin.com',
+    address: '江苏省苏州市姑苏�?,
+    createdAt: '2024-04-02',
+    endpoint: 'https://api.zhijin.com/v1',
+    apiKey: 'sk_test_xxxx',
   },
   {
     id: '7',
-    name: 'BookHeaven',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=BH&backgroundColor=f5f5f5',
-    description: 'Books and literary products',
-    tags: ['book', 'literature', 'education'],
-    status: 'active',
-    contactName: 'Xu Lei',
-    phone: '133****3333',
-    email: 'service@bookheaven.com',
-    address: 'Nanjing Xuanwu District',
-    createdAt: '2024-05-01',
-    endpoint: 'https://api.bookheaven.com/v1',
-    apiKey: 'sk_test_dddd',
+    name: '古琴�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=古琴�?backgroundColor=f5f5f5',
+    description: '古琴销售与培训',
+    tags: ['乐器', '培训', '文化'],
+    status: 'rejected',
+    contactName: '吴老师',
+    phone: '139****2222',
+    email: 'guqin@guqin.com',
+    address: '北京市西城区什刹海',
+    createdAt: '2024-03-20',
+    endpoint: 'https://api.guqin.com/v1',
+    apiKey: 'sk_test_xxxx',
   },
   {
     id: '8',
-    name: 'HealthHome',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=HH&backgroundColor=f5f5f5',
-    description: 'Health and wellness products',
-    tags: ['health', 'wellness', 'medical'],
+    name: '紫砂�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=紫砂�?backgroundColor=f5f5f5',
+    description: '宜兴紫砂壶与茶具',
+    tags: ['紫砂', '茶具', '收藏'],
     status: 'active',
-    contactName: 'Sun Hui',
-    phone: '132****2222',
-    email: 'info@healthhome.com',
-    address: 'Wuhan Wuchang District',
-    createdAt: '2024-05-05',
-    endpoint: 'https://api.healthhome.com/v1',
-    apiKey: 'sk_test_eeee',
+    contactName: '钱先�?,
+    phone: '136****1111',
+    email: 'zisha@zisha.com',
+    address: '江苏省宜兴市丁蜀�?,
+    createdAt: '2024-03-18',
+    endpoint: 'https://api.zisha.com/v1',
+    apiKey: 'sk_test_xxxx',
   },
   {
     id: '9',
-    name: 'GlobalFood',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=GF&backgroundColor=f5f5f5',
-    description: 'International cuisine ingredients',
-    tags: ['food', 'international', 'ingredients'],
-    status: 'active',
-    contactName: 'Ma Lin',
-    phone: '131****1111',
-    email: 'order@globalfood.com',
-    address: 'Suzhou Industrial Park',
-    createdAt: '2024-05-10',
-    endpoint: 'https://api.globalfood.com/v1',
-    apiKey: 'sk_test_ffff',
+    name: '香道�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=香道�?backgroundColor=f5f5f5',
+    description: '天然香品与香�?,
+    tags: ['香品', '文房', '养生'],
+    status: 'banned',
+    contactName: '郑女�?,
+    phone: '137****9999',
+    email: 'info@xiangdao.com',
+    address: '广东省广州市荔湾�?,
+    createdAt: '2024-03-15',
+    endpoint: 'https://api.xiangdao.com/v1',
+    apiKey: 'sk_test_xxxx',
+    banReason: '涉嫌销售违禁品',
+    bannedAt: '2024-04-01',
   },
   {
     id: '10',
-    name: 'CreativeStudio',
-    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=CS&backgroundColor=f5f5f5',
-    description: 'Creative design services',
-    tags: ['design', 'creative', 'art'],
-    status: 'active',
-    contactName: 'Zhu Hua',
-    phone: '130****0000',
-    email: 'hello@creativestudio.com',
-    address: 'Xian Beilin District',
-    createdAt: '2024-05-15',
-    endpoint: 'https://api.creativestudio.com/v1',
-    apiKey: 'sk_test_gggg',
+    name: '漆艺�?,
+    logo: 'https://api.dicebear.com/7.x/initials/svg?seed=漆艺�?backgroundColor=f5f5f5',
+    description: '传统漆器工艺�?,
+    tags: ['漆器', '工艺�?, '非遗'],
+    status: 'pending',
+    contactName: '冯女�?,
+    phone: '135****8888',
+    email: 'paint@qiyou.com',
+    address: '福建省福州市鼓楼�?,
+    createdAt: '2024-04-02',
+    endpoint: 'https://api.qiyou.com/v1',
+    apiKey: 'sk_test_xxxx',
   },
 ];
 
-// Get all merchants with optional filters
-export function getMerchants(searchName?: string, statusFilter?: string): Merchant[] {
-  let result = [...mockMerchants];
-  
-  if (searchName) {
-    result = result.filter(m => 
-      m.name.toLowerCase().includes(searchName.toLowerCase()) ||
-      m.description.toLowerCase().includes(searchName.toLowerCase())
-    );
-  }
-  
-  if (statusFilter && statusFilter !== 'all') {
-    result = result.filter(m => m.status === statusFilter);
-  }
-  
-  return result;
-}
+// 模拟API函数
+export const getMerchants = async (): Promise<Merchant[]> => {
+  // 模拟网络延迟
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  return [...mockMerchants];
+};
 
-// Get merchant by ID
-export function getMerchantById(id: string): Merchant | undefined {
-  return mockMerchants.find(m => m.id === id);
-}
+export const getMerchantById = async (id: string): Promise<Merchant | undefined> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  return mockMerchants.find((m) => m.id === id);
+};
 
-// Update merchant status
-export function updateMerchantStatus(id: string, status: MerchantStatus, banReason?: string): Merchant | undefined {
-  const merchant = mockMerchants.find(m => m.id === id);
-  if (merchant) {
-    merchant.status = status;
-    if (status === 'banned') {
-      merchant.banReason = banReason;
-      merchant.bannedAt = new Date().toISOString();
-    } else {
-      delete merchant.banReason;
-      delete merchant.bannedAt;
-    }
+export const updateMerchantStatus = async (
+  id: string,
+  status: MerchantStatus,
+  banReason?: string
+): Promise<Merchant | undefined> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const index = mockMerchants.findIndex((m) => m.id === id);
+  if (index !== -1) {
+    mockMerchants[index] = {
+      ...mockMerchants[index],
+      status,
+      banReason: status === 'banned' ? banReason : undefined,
+      bannedAt: status === 'banned' ? new Date().toISOString().split('T')[0] : undefined,
+    };
+    return mockMerchants[index];
   }
-  return merchant;
-}
+  return undefined;
+};

@@ -1,38 +1,10 @@
-# Dependencies
 node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Build outputs
-dist/
-build/
+.DS_Store
 *.log
-
-# Environment files (包含敏感信息)
+npm-debug.log*
 .env
 .env.local
-.env.*.local
-
-# IDE
-.idea/
-.vscode/
+dist/
+build/
 *.swp
 *.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Test coverage
-coverage/
-.nyc_output/
-
-# Temp
-tmp/
-temp/
-*.tmp
-
-# Zip backup (部署备份)
-github-repo.zip
-*.zip

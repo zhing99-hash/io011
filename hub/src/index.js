@@ -44,6 +44,7 @@ fastify.register(require('./routes/categories'), { prefix: '/api/v1/categories' 
 fastify.register(require('./routes/auth'), { prefix: '/api/v1/auth' });
 fastify.register(require('./routes/orders'), { prefix: '/api/v1/orders' });
 fastify.register(require('./routes/products'), { prefix: '/api/v1/products' });
+fastify.register(require('./routes/userAuth'), { prefix: '/api/v1' });
 
 // WebSocket handler for merchant connections
 fastify.register(async function (fastify) {
