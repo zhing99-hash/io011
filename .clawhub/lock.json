@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "github": {
+      "version": "1.0.0",
+      "installedAt": 1775095531225
+    },
+    "self-improving-agent": {
+      "version": "3.0.11",
+      "installedAt": 1775095561686
+    },
+    "token-optimizer": {
+      "version": "1.0.18",
+      "installedAt": 1775095922137
+    }
+  }
+}

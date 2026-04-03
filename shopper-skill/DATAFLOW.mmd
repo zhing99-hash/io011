@@ -1,0 +1,259 @@
+%% IO011/AICart 用户端 - 数据流图 (Mermaid 格式)
+%% 可在支持 Mermaid 的编辑器中渲染
+
+%% ==================== 1. 系统架构概览 ====================
+
+graph TB
+    subgraph User["用户层"]
+        U[用户查询]
+    end
+
+    subgraph ShopperSkill["io011-shopper Skill"]
+        API[Skill API Handler]
+        
+        subgraph CoreModules["核心模块"]
+            HubClient[HubClient<br/>标签搜索]
+            A2APool[Merchant A2A Pool<br/>WebSocket 连接池]
+            QueryEngine[Parallel Query Engine<br/>并行查询引擎]
+            Aggregator[Result Aggregator<br/>结果聚合器]
+        end
+        
+        CB[Circuit Breaker<br/>熔断保护]
+    end
+
+    subgraph External["外部服务"]
+        HubAPI[Hub API<br/>GET /api/v1/search]
+        Merchant1[商户 A<br/>wss://merchant-a]
+        Merchant2[商户 B<br/>wss://merchant-b]
+        Merchant3[商户 C<br/>wss://merchant-c]
+    end
+
+    U -->|1. search tags=茶具| API
+    API -->|2. getMerchants| HubClient
+    HubClient -->|3. HTTP GET| HubAPI
+    HubAPI -->|4. merchant list| HubClient
+    HubClient -->|5. merchants| QueryEngine
+    
+    QueryEngine -->|6. parallel queries| A2APool
+    A2APool -->|7. WS search| Merchant1
+    A2APool -->|7. WS search| Merchant2
+    A2APool -->|7. WS search| Merchant3
+    
+    Merchant1 -->|8. products| A2APool
+    Merchant2 -->|8. products| A2APool
+    Merchant3 -->|8. products| A2APool
+    
+    A2APool -->|9. raw results| Aggregator
+    Aggregator -->|10. aggregated| API
+    API -->|11. final result| U
+    
+    CB -.->|保护| QueryEngine
+    CB -.->|保护| HubClient
+
+%% ==================== 2. 并行查询时序图 ====================
+
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant API as Skill API
+    participant Hub as HubClient
+    participant QE as QueryEngine
+    participant CB as CircuitBreaker
+    participant M1 as 商户A
+    participant M2 as 商户B
+    participant M3 as 商户C
+    participant Agg as Aggregator
+
+    U->>API: search(tags=["茶具"])
+    API->>Hub: searchMerchants()
+    Hub-->>API: [商户A, 商户B, 商户C]
+    
+    API->>QE: executeQuery(merchants, request)
+    
+    par 并行查询 - 2秒超时
+        QE->>CB: query(M1)
+        CB->>M1: WS: search_products
+        M1-->>CB: products (800ms)
+        CB-->>QE: success
+    and
+        QE->>CB: query(M2)
+        CB->>M2: WS: search_products
+        M2--xCB: timeout (2000ms)
+        CB-->>QE: failed
+    and
+        QE->>CB: query(M3)
+        CB->>M3: WS: search_products
+        M3-->>CB: products (1500ms)
+        CB-->>QE: success
+    end
+    
+    QE->>Agg: aggregate(results)
+    Agg-->>QE: aggregated products
+    QE-->>API: QueryResult
+    API-->>U: 商品列表 + 统计
+
+%% ==================== 3. 熔断器状态机 ====================
+
+stateDiagram-v2
+    [*] --> CLOSED : 初始化
+    
+    CLOSED : 正常状态
+    CLOSED : 所有请求正常通过
+    CLOSED --> OPEN : 失败率 >= 50%
+    
+    OPEN : 熔断状态
+    OPEN : 所有请求快速失败
+    OPEN --> HALF_OPEN : 30秒超时
+    
+    HALF_OPEN : 半开状态
+    HALF_OPEN : 允许试探请求
+    HALF_OPEN --> CLOSED : 试探成功
+    HALF_OPEN --> OPEN : 试探失败
+
+%% ==================== 4. 结果聚合流程 ====================
+
+graph LR
+    subgraph Input["输入: 多商户原始数据"]
+        R1[商户A: 12件商品]
+        R2[商户B: 超时失败]
+        R3[商户C: 8件商品]
+    end
+    
+    subgraph Process["聚合处理"]
+        D[去重算法<br/>相似度>0.85]
+        M[合并同款<br/>价格对比]
+        S[排序<br/>相关性得分]
+    end
+    
+    subgraph Output["输出: 聚合结果"]
+        P1[商品X<br/>最低¥158 (2个商户)]
+        P2[商品Y<br/>¥128 (1个商户)]
+        P3[商品Z<br/>最低¥200 (3个商户)]
+    end
+    
+    R1 --> D
+    R3 --> D
+    D --> M
+    M --> S
+    S --> P1
+    S --> P2
+    S --> P3
+
+%% ==================== 5. 错误处理流程 ====================
+
+flowchart TD
+    Start([开始查询]) --> CheckHub{Hub API<br/>可用?}
+    
+    CheckHub -->|是| GetMerchants[获取商户列表]
+    CheckHub -->|否| UseCache[使用缓存商户列表]
+    
+    GetMerchants --> InitQuery[初始化并行查询]
+    UseCache --> InitQuery
+    
+    InitQuery --> QueryLoop{还有<br/>未查询商户?}
+    QueryLoop -->|是| CheckCB{熔断器<br/>状态?}
+    QueryLoop -->|否| Aggregate[结果聚合]
+    
+    CheckCB -->|CLOSED| SendQuery[发送查询]
+    CheckCB -->|OPEN| SkipMerchant[跳过该商户]
+    SkipMerchant --> QueryLoop
+    
+    SendQuery --> CheckTimeout{2秒内<br/>响应?}
+    CheckTimeout -->|是| Success[记录成功结果]
+    CheckTimeout -->|否| Timeout[记录超时失败]
+    
+    Success --> UpdateStats[更新商户统计]
+    Timeout --> UpdateStats
+    UpdateStats --> QueryLoop
+    
+    Aggregate --> CheckResults{成功商户<br/>数量}
+    CheckResults -->|>0| ReturnResults[返回聚合结果]
+    CheckResults -->|0| Fallback[返回降级数据]
+    
+    ReturnResults --> End([结束])
+    Fallback --> End
+
+%% ==================== 6. 商户A2A连接管理 ====================
+
+graph TB
+    subgraph ConnectionPool["WebSocket 连接池"]
+        direction TB
+        
+        PoolMgr[连接池管理器]
+        
+        subgraph Active["活跃连接"]
+            C1[商户A<br/>🟢 connected]
+            C2[商户B<br/>🟢 connected]
+        end
+        
+        subgraph Idle["空闲连接"]
+            C3[商户C<br/>🟡 idle]
+            C4[商户D<br/>🟡 idle]
+        end
+        
+        subgraph Dead["失效连接"]
+            C5[商户E<br/>🔴 disconnected]
+        end
+    end
+    
+    subgraph Lifecycle["连接生命周期"]
+        Create[创建连接] --> Connect{连接成功?}
+        Connect -->|是| Healthy[健康状态]
+        Connect -->|否| Reconnect[重连逻辑]
+        
+        Healthy --> Heartbeat[心跳检测<br/>每30秒]
+        Heartbeat --> Alive{响应?}
+        Alive -->|是| Healthy
+        Alive -->|否| MarkDead[标记失效]
+        
+        Reconnect -->|重试<3次| Connect
+        Reconnect -->|重试>=3次| MarkDead
+        MarkDead --> Cleanup[清理资源]
+    end
+    
+    PoolMgr --> Active
+    PoolMgr --> Idle
+    PoolMgr --> Dead
+
+%% ==================== 7. 查询优先级策略 ====================
+
+graph LR
+    subgraph Priority["商户优先级排序"]
+        direction TB
+        
+        P1[商户A<br/>历史响应: 120ms<br/>优先级: 1 🔴]
+        P2[商户B<br/>历史响应: 200ms<br/>优先级: 2 🟡]
+        P3[商户C<br/>历史响应: 350ms<br/>优先级: 3 🟢]
+        P4[商户D<br/>历史响应: 500ms<br/>优先级: 4 ⚪]
+    end
+    
+    subgraph Execution["执行顺序"]
+        direction LR
+        
+        E1[第1批<br/>并发4个<br/>优先快速商户]
+        E2[第2批<br/>等待/超时后<br/>补充查询]
+    end
+    
+    P1 --> E1
+    P2 --> E1
+    P3 --> E1
+    P4 --> E2
+    
+    E1 -->|2秒超时| Result[返回结果]
+    E2 -->|后续追加| Result
+
+%% ==================== 样式定义 ====================
+
+style ShopperSkill fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+style CoreModules fill:#fff3e0,stroke:#e65100,stroke-width:2px
+style External fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+style User fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+style HubClient fill:#bbdefb,stroke:#1565c0
+style QueryEngine fill:#bbdefb,stroke:#1565c0
+style Aggregator fill:#bbdefb,stroke:#1565c0
+
+style P1 fill:#ffcdd2,stroke:#c62828
+style P2 fill:#ffe0b2,stroke:#ef6c00
+style P3 fill:#fff9c4,stroke:#f9a825
+style P4 fill:#f5f5f5,stroke:#616161
