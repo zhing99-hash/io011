@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{merchant.name}} - 首页</title>
+  <meta name="description" content="{{merchant.description}}">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">{{merchant.name}}</h1>
+      <p class="site-description">{{merchant.description}}</p>
+      <nav class="main-nav">
+        <a href="index.html" class="active">首页</a>
+        <a href="products.html">全部商品</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <section class="hero">
+      <div class="container">
+        <h2>欢迎来到我们的店铺</h2>
+        <p>发现优质商品，享受便捷购物体验</p>
+      </div>
+    </section>
+
+    <section class="featured-products">
+      <div class="container">
+        <h3>热门商品</h3>
+        <div class="product-grid">
+          <!-- 商品卡片将在这里动态生成 -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2024 {{merchant.name}}. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">
+    <span class="theme-icon">🌓</span>
+  </button>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单管理 - IO011 商户端</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="js/api.js"></script>
+  <style>
+    :root { --brand: #10B981; }
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen text-gray-100">
+  <!-- 侧边栏 -->
+  <aside class="fixed left-0 top-0 w-64 h-screen bg-gray-800 border-r border-gray-700 p-4 z-50">
+    <div class="flex items-center gap-3 mb-8 px-2">
+      <img src="green-logo.png" alt="IO011" class="h-10 w-auto rounded-xl" style="width: 40px; height: 40px; object-fit: contain;">
+      <div>
+        <span class="text-white font-bold">IO011</span>
+        <span class="text-xs text-emerald-400 block">商户端</span>
+      </div>
+    </div>
+    
+    <nav class="space-y-1">
+      <a href="dashboard.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span>仪表盘</span>
+      </a>
+      <a href="index.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+        <span>商品管理</span>
+      </a>
+      <a href="inactive.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+        <span>下架商品</span>
+      </a>
+      <a href="#orders" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/20 text-emerald-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+        <span>订单管理</span>
+      </a>
+    </nav>
+
+    <div class="absolute bottom-4 left-4 right-4">
+      <div class="bg-gray-700/50 rounded-xl p-4">
+        <p class="text-xs text-gray-400 mb-2">商户状态</p>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+          <span class="text-sm text-green-400" id="shopName">-</span>
+        </div>
+      </div>
+      <button onclick="logout()" class="mt-3 w-full py-2 px-4 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-xl text-sm transition-colors">
+        退出登录
+      </button>
+    </div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="ml-64 p-8">
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-white">订单管理</h1>
+        <p class="text-gray-400 text-sm mt-1">查看和处理客户订单</p>
+      </div>
+      <span id="apiStatus" class="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">本地模式</span>
+    </header>
+
+    <!-- 统计卡片 -->
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">今日订单</p>
+        <p class="text-3xl font-bold text-white mt-1" id="todayCount">-</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">待处理</p>
+        <p class="text-3xl font-bold text-yellow-400 mt-1" id="pendingCount">-</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">配送中</p>
+        <p class="text-3xl font-bold text-blue-400 mt-1" id="shippingCount">-</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">今日销售额</p>
+        <p class="text-3xl font-bold text-emerald-400 mt-1" id="todaySales">¥0</p>
+      </div>
+    </div>
+
+    <!-- 筛选 -->
+    <div class="bg-gray-800 rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-semibold text-white">订单列表</h3>
+        <div class="flex gap-2">
+          <button onclick="filterOrders('all')" class="filter-btn px-3 py-1 bg-emerald-500 text-white text-sm rounded-lg">全部</button>
+          <button onclick="filterOrders('pending')" class="filter-btn px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600">待处理</button>
+          <button onclick="filterOrders('paid')" class="filter-btn px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600">已付款</button>
+          <button onclick="filterOrders('shipped')" class="filter-btn px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600">配送中</button>
+          <button onclick="filterOrders('completed')" class="filter-btn px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600">已完成</button>
+        </div>
+      </div>
+
+      <div id="loadingState" class="text-center py-8">
+        <svg class="animate-spin h-8 w-8 mx-auto text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="text-gray-400 mt-2">加载中...</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+              <th class="pb-3 font-medium">订单号</th>
+              <th class="pb-3 font-medium">商品</th>
+              <th class="pb-3 font-medium">客户</th>
+              <th class="pb-3 font-medium">数量</th>
+              <th class="pb-3 font-medium">金额</th>
+              <th class="pb-3 font-medium">状态</th>
+              <th class="pb-3 font-medium">时间</th>
+              <th class="pb-3 font-medium">操作</th>
+            </tr>
+          </thead>
+          <tbody id="orderTable" class="text-sm">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- 订单详情Modal -->
+  <div id="orderModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+    <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-lg mx-4">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white">订单详情</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div id="orderDetail" class="space-y-4">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'io011_orders';
+    let allOrders = [];
+    let currentFilter = 'all';
+    let isLocalMode = true;
+
+    const STATUS_MAP = {
+      pending: { text: '待处理', class: 'bg-yellow-500/20 text-yellow-400' },
+      paid: { text: '已付款', class: 'bg-blue-500/20 text-blue-400' },
+      shipped: { text: '配送中', class: 'bg-purple-500/20 text-purple-400' },
+      completed: { text: '已完成', class: 'bg-green-500/20 text-green-400' }
+    };
+
+    const SAMPLE_ORDERS = [
+      { id: 'ord_001', product: 'HUAWEI Mate 60 Pro', customer: '张三', quantity: 1, price: 6999, status: 'completed', time: '09:15', address: '北京市朝阳区xxx', phone: '13800138000' },
+      { id: 'ord_002', product: '华为手表 GT4', customer: '李四', quantity: 2, price: 1688, status: 'shipped', time: '09:20', address: '上海市浦东新区xxx', phone: '13900139000' },
+      { id: 'ord_003', product: 'FreeBuds Pro 3', customer: '王五', quantity: 1, price: 1499, status: 'paid', time: '09:25', address: '广州市天河区xxx', phone: '13700137000' },
+      { id: 'ord_004', product: 'MatePad Pro', customer: '赵六', quantity: 1, price: 4999, status: 'pending', time: '09:28', address: '深圳市南山区xxx', phone: '13600136000' },
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('merchant_token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const tokenData = JSON.parse(token);
+      document.getElementById('shopName').textContent = tokenData.shopName;
+      
+      isLocalMode = tokenData.isLocalMode !== false;
+      
+      const statusEl = document.getElementById('apiStatus');
+      if (isLocalMode) {
+        statusEl.className = 'px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full';
+        statusEl.textContent = '本地模式';
+      } else {
+        statusEl.className = 'px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full';
+        statusEl.textContent = '在线';
+      }
+
+      loadOrders();
+    });
+
+    async function loadOrders() {
+      document.getElementById('loadingState').classList.remove('hidden');
+      document.getElementById('orderTable').innerHTML = '';
+
+      try {
+        if (isLocalMode) {
+          const data = localStorage.getItem(STORAGE_KEY);
+          allOrders = data ? JSON.parse(data) : SAMPLE_ORDERS;
+          // 如果没有数据，初始化示例数据
+          if (!data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_ORDERS));
+          }
+        } else {
+          const result = await IO011API.getOrders();
+          allOrders = result.orders || result.data?.orders || result || [];
+        }
+
+        updateStats();
+        filterOrders('all');
+      } catch (error) {
+        console.error('Load orders error:', error);
+        allOrders = SAMPLE_ORDERS;
+        updateStats();
+        filterOrders('all');
+      } finally {
+        document.getElementById('loadingState').classList.add('hidden');
+      }
+    }
+
+    function updateStats() {
+      const todayOrders = allOrders;
+      document.getElementById('todayCount').textContent = todayOrders.length;
+      document.getElementById('pendingCount').textContent = allOrders.filter(o => o.status === 'pending').length;
+      document.getElementById('shippingCount').textContent = allOrders.filter(o => o.status === 'shipped').length;
+      document.getElementById('todaySales').textContent = '¥' + todayOrders.reduce((sum, o) => sum + (o.price * o.quantity || 0), 0).toLocaleString();
+    }
+
+    function filterOrders(status) {
+      currentFilter = status;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-500', 'text-white');
+        btn.classList.add('bg-gray-700', 'text-gray-300');
+      });
+      event?.target?.classList.remove('bg-gray-700', 'text-gray-300');
+      event?.target?.classList.add('bg-emerald-500', 'text-white');
+
+      let orders = allOrders;
+      if (status !== 'all') {
+        orders = orders.filter(o => o.status === status);
+      }
+
+      renderOrders(orders);
+    }
+
+    function renderOrders(orders) {
+      const tbody = document.getElementById('orderTable');
+      tbody.innerHTML = orders.map(o => `
+        <tr class="border-b border-gray-700/50 hover:bg-gray-700/30">
+          <td class="py-4 text-white font-mono">${o.id}</td>
+          <td class="py-4">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📦</span>
+              <span class="text-gray-300">${o.product}</span>
+            </div>
+          </td>
+          <td class="py-4 text-gray-300">${o.customer}</td>
+          <td class="py-4 text-gray-300">${o.quantity}</td>
+          <td class="py-4 text-white font-medium">¥${((o.price || 0) * (o.quantity || 1)).toLocaleString()}</td>
+          <td class="py-4"><span class="px-2 py-1 text-xs rounded-full ${STATUS_MAP[o.status]?.class || 'bg-gray-500/20 text-gray-400'}">${STATUS_MAP[o.status]?.text || o.status}</span></td>
+          <td class="py-4 text-gray-500">${o.time}</td>
+          <td class="py-4">
+            <button onclick="showOrderDetail('${o.id}')" class="text-emerald-400 hover:text-emerald-300">详情</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function showOrderDetail(id) {
+      const order = allOrders.find(o => o.id === id);
+      if (!order) return;
+
+      const detail = document.getElementById('orderDetail');
+      detail.innerHTML = `
+        <div class="bg-gray-700/50 rounded-xl p-4">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-gray-400">订单号</span>
+            <span class="text-white font-mono">${order.id}</span>
+          </div>
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-gray-400">状态</span>
+            <span class="px-2 py-1 text-xs rounded-full ${STATUS_MAP[order.status]?.class || 'bg-gray-500/20 text-gray-400'}">${STATUS_MAP[order.status]?.text || order.status}</span>
+          </div>
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-gray-400">商品</span>
+            <span class="text-white">${order.product} × ${order.quantity}</span>
+          </div>
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-gray-400">客户</span>
+            <span class="text-white">${order.customer}</span>
+          </div>
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-gray-400">电话</span>
+            <span class="text-white">${order.phone || '-'}</span>
+          </div>
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-gray-400">地址</span>
+            <span class="text-white text-right">${order.address || '-'}</span>
+          </div>
+          <div class="flex justify-between items-center pt-4 border-t border-gray-600">
+            <span class="text-gray-400">订单金额</span>
+            <span class="text-emerald-400 font-bold text-xl">¥${((order.price || 0) * (order.quantity || 1)).toLocaleString()}</span>
+          </div>
+        </div>
+        
+        <div class="flex gap-3">
+          ${order.status === 'pending' ? `<button onclick="updateStatus('${order.id}', 'paid')" class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors">标记已付款</button>` : ''}
+          ${order.status === 'paid' ? `<button onclick="updateStatus('${order.id}', 'shipped')" class="flex-1 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors">开始配送</button>` : ''}
+          ${order.status === 'shipped' ? `<button onclick="updateStatus('${order.id}', 'completed')" class="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors">确认完成</button>` : ''}
+        </div>
+      `;
+
+      document.getElementById('orderModal').classList.remove('hidden');
+    }
+
+    async function updateStatus(id, newStatus) {
+      try {
+        if (isLocalMode) {
+          const index = allOrders.findIndex(o => o.id === id);
+          if (index > -1) {
+            allOrders[index].status = newStatus;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allOrders));
+          }
+        } else {
+          await IO011API.updateOrderStatus(id, newStatus);
+        }
+        closeModal();
+        loadOrders();
+      } catch (error) {
+        alert('更新失败: ' + error.message);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('orderModal').classList.add('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('merchant_token');
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('orderModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品管理 - IO011 商户端</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand: #10B981; }
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen text-gray-100">
+  <!-- 侧边栏 -->
+  <aside class="fixed left-0 top-0 w-64 h-screen bg-gray-800 border-r border-gray-700 p-4 z-50">
+    <div class="flex items-center gap-3 mb-8 px-2">
+      <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white font-bold">IO</div>
+      <div>
+        <span class="text-white font-bold">IO011</span>
+        <span class="text-xs text-emerald-400 block">商户端</span>
+      </div>
+    </div>
+    
+    <nav class="space-y-1">
+      <a href="dashboard.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span>仪表盘</span>
+      </a>
+      <a href="products.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/20 text-emerald-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+        <span>商品管理</span>
+      </a>
+      <a href="orders.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+        <span>订单管理</span>
+      </a>
+    </nav>
+
+    <div class="absolute bottom-4 left-4 right-4">
+      <button onclick="logout()" class="w-full py-2 px-4 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-xl text-sm transition-colors">
+        退出登录
+      </button>
+    </div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="ml-64 p-8">
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-white">商品管理</h1>
+        <p class="text-gray-400 text-sm mt-1">管理您的商品</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">运营中</span>
+        <button onclick="showAddModal()" class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          添加商品
+        </button>
+      </div>
+    </header>
+
+    <!-- 统计 -->
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">在售商品</p>
+        <p class="text-3xl font-bold text-white mt-1">4</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">已下架</p>
+        <p class="text-3xl font-bold text-white mt-1">0</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">类目数</p>
+        <p class="text-3xl font-bold text-white mt-1">1</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">总商品价值</p>
+        <p class="text-3xl font-bold text-emerald-400 mt-1">¥15,185</p>
+      </div>
+    </div>
+
+    <!-- 商品列表 -->
+    <div class="bg-gray-800 rounded-2xl p-6">
+      <h3 class="font-semibold text-white mb-6">在售商品</h3>
+      
+      <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-700 transition-colors">
+          <div class="w-full h-32 bg-gray-600 rounded-lg mb-3 flex items-center justify-center">
+            <span class="text-4xl">📱</span>
+          </div>
+          <h4 class="font-medium text-white truncate">HUAWEI Mate 60 Pro</h4>
+          <p class="text-emerald-400 font-bold mt-1">¥6,999</p>
+          <p class="text-gray-500 text-xs mt-1">数码</p>
+          <div class="flex gap-2 mt-3">
+            <button class="flex-1 py-2 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded-lg transition-colors">编辑</button>
+            <button class="flex-1 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-sm rounded-lg transition-colors">下架</button>
+          </div>
+        </div>
+
+        <div class="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-700 transition-colors">
+          <div class="w-full h-32 bg-gray-600 rounded-lg mb-3 flex items-center justify-center">
+            <span class="text-4xl">⌚</span>
+          </div>
+          <h4 class="font-medium text-white truncate">华为手表 GT4</h4>
+          <p class="text-emerald-400 font-bold mt-1">¥1,688</p>
+          <p class="text-gray-500 text-xs mt-1">数码</p>
+          <div class="flex gap-2 mt-3">
+            <button class="flex-1 py-2 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded-lg transition-colors">编辑</button>
+            <button class="flex-1 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-sm rounded-lg transition-colors">下架</button>
+          </div>
+        </div>
+
+        <div class="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-700 transition-colors">
+          <div class="w-full h-32 bg-gray-600 rounded-lg mb-3 flex items-center justify-center">
+            <span class="text-4xl">🎧</span>
+          </div>
+          <h4 class="font-medium text-white truncate">FreeBuds Pro 3</h4>
+          <p class="text-emerald-400 font-bold mt-1">¥1,499</p>
+          <p class="text-gray-500 text-xs mt-1">数码</p>
+          <div class="flex gap-2 mt-3">
+            <button class="flex-1 py-2 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded-lg transition-colors">编辑</button>
+            <button class="flex-1 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-sm rounded-lg transition-colors">下架</button>
+          </div>
+        </div>
+
+        <div class="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-700 transition-colors">
+          <div class="w-full h-32 bg-gray-600 rounded-lg mb-3 flex items-center justify-center">
+            <span class="text-4xl">📱</span>
+          </div>
+          <h4 class="font-medium text-white truncate">MatePad Pro</h4>
+          <p class="text-emerald-400 font-bold mt-1">¥4,999</p>
+          <p class="text-gray-500 text-xs mt-1">数码</p>
+          <div class="flex gap-2 mt-3">
+            <button class="flex-1 py-2 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded-lg transition-colors">编辑</button>
+            <button class="flex-1 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-sm rounded-lg transition-colors">下架</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 添加商品弹窗 -->
+  <div id="productModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+    <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-lg mx-4">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white">添加商品</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">商品名称</label>
+          <input type="text" class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-emerald-500" placeholder="请输入商品名称">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">价格</label>
+            <input type="number" class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-emerald-500" placeholder="0.00">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">类目</label>
+            <select class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-emerald-500">
+              <option>数码</option>
+              <option>服装</option>
+              <option>食品</option>
+              <option>家居</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">商品描述</label>
+          <textarea rows="3" class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-emerald-500" placeholder="请输入商品描述"></textarea>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button onclick="closeModal()" class="flex-1 py-3 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-xl transition-colors">取消</button>
+          <button class="flex-1 py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-colors">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('merchant_token');
+      if (!token) {
+        window.location.href = 'login.html';
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('merchant_token');
+      window.location.href = 'login.html';
+    }
+
+    function showAddModal() {
+      document.getElementById('productModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').classList.add('hidden');
+    }
+
+    document.getElementById('productModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  </script>
+</body>
+</html>

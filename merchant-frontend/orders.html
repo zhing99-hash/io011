@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单管理 - IO011 商户端</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand: #10B981; }
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen text-gray-100">
+  <!-- 侧边栏 -->
+  <aside class="fixed left-0 top-0 w-64 h-screen bg-gray-800 border-r border-gray-700 p-4 z-50">
+    <div class="flex items-center gap-3 mb-8 px-2">
+      <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white font-bold">IO</div>
+      <div>
+        <span class="text-white font-bold">IO011</span>
+        <span class="text-xs text-emerald-400 block">商户端</span>
+      </div>
+    </div>
+    
+    <nav class="space-y-1">
+      <a href="dashboard.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span>仪表盘</span>
+      </a>
+      <a href="products.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+        <span>商品管理</span>
+      </a>
+      <a href="orders.html" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/20 text-emerald-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+        <span>订单管理</span>
+      </a>
+    </nav>
+
+    <div class="absolute bottom-4 left-4 right-4">
+      <button onclick="logout()" class="w-full py-2 px-4 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-xl text-sm transition-colors">
+        退出登录
+      </button>
+    </div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="ml-64 p-8">
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-white">订单管理</h1>
+        <p class="text-gray-400 text-sm mt-1">查看和处理客户订单</p>
+      </div>
+    </header>
+
+    <!-- 统计卡片 -->
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">今日订单</p>
+        <p class="text-3xl font-bold text-white mt-1">156</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">待处理</p>
+        <p class="text-3xl font-bold text-yellow-400 mt-1">23</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">配送中</p>
+        <p class="text-3xl font-bold text-purple-400 mt-1">45</p>
+      </div>
+      <div class="bg-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400 text-sm">今日销售额</p>
+        <p class="text-3xl font-bold text-emerald-400 mt-1">¥12,856</p>
+      </div>
+    </div>
+
+    <!-- 筛选 -->
+    <div class="bg-gray-800 rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-semibold text-white">订单列表</h3>
+        <div class="flex gap-2">
+          <button class="px-3 py-1 bg-emerald-500 text-white text-sm rounded-lg">全部</button>
+          <button class="px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600">待处理</button>
+          <button class="px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600">配送中</button>
+          <button class="px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600">已完成</button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+              <th class="pb-3 font-medium">订单号</th>
+              <th class="pb-3 font-medium">商品</th>
+              <th class="pb-3 font-medium">客户</th>
+              <th class="pb-3 font-medium">数量</th>
+              <th class="pb-3 font-medium">金额</th>
+              <th class="pb-3 font-medium">状态</th>
+              <th class="pb-3 font-medium">时间</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            <tr class="border-b border-gray-700/50 hover:bg-gray-700/30">
+              <td class="py-4 text-white font-mono">20260404001</td>
+              <td class="py-4">HUAWEI Mate 60 Pro</td>
+              <td class="py-4 text-gray-300">张三</td>
+              <td class="py-4 text-gray-300">1</td>
+              <td class="py-4 text-white font-medium">¥6,999</td>
+              <td class="py-4"><span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">已完成</span></td>
+              <td class="py-4 text-gray-500">今天 09:15</td>
+            </tr>
+            <tr class="border-b border-gray-700/50 hover:bg-gray-700/30">
+              <td class="py-4 text-white font-mono">20260404002</td>
+              <td class="py-4">华为手表 GT4</td>
+              <td class="py-4 text-gray-300">李四</td>
+              <td class="py-4 text-gray-300">2</td>
+              <td class="py-4 text-white font-medium">¥3,376</td>
+              <td class="py-4"><span class="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">配送中</span></td>
+              <td class="py-4 text-gray-500">今天 09:20</td>
+            </tr>
+            <tr class="border-b border-gray-700/50 hover:bg-gray-700/30">
+              <td class="py-4 text-white font-mono">20260404003</td>
+              <td class="py-4">FreeBuds Pro 3</td>
+              <td class="py-4 text-gray-300">王五</td>
+              <td class="py-4 text-gray-300">1</td>
+              <td class="py-4 text-white font-medium">¥1,499</td>
+              <td class="py-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">已付款</span></td>
+              <td class="py-4 text-gray-500">今天 09:25</td>
+            </tr>
+            <tr class="hover:bg-gray-700/30">
+              <td class="py-4 text-white font-mono">20260404004</td>
+              <td class="py-4">MatePad Pro</td>
+              <td class="py-4 text-gray-300">赵六</td>
+              <td class="py-4 text-gray-300">1</td>
+              <td class="py-4 text-white font-medium">¥4,999</td>
+              <td class="py-4"><span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">待处理</span></td>
+              <td class="py-4 text-gray-500">今天 09:28</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('merchant_token');
+      if (!token) {
+        window.location.href = 'login.html';
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('merchant_token');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

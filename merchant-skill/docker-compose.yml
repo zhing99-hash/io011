@@ -1,0 +1,28 @@
+
+services:
+  merchant-skill:
+    build: .
+    container_name: aicart-merchant
+    ports:
+      - "3456:3456"
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./generated-site:/app/generated-site
+      - ./uploads:/app/uploads
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+    restart: unless-stopped
+    networks:
+      - aicart-network
+
+networks:
+  aicart-network:
+    driver: bridge
+
+volumes:
+  merchant-data:
+  merchant-logs:
+  merchant-site:
