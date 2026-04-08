@@ -9,7 +9,7 @@ const { ProductManager } = require('./commands/product');
 const { HubManager } = require('./commands/hub');
 const { SiteManager } = require('./commands/site');
 const { AnalyticsManager } = require('./commands/analytics');
-const { Database } = require('./utils/database');
+const { DatabaseManager } = require('./utils/database');
 const { Logger } = require('./utils/logger');
 
 class MerchantSkill extends EventEmitter {
@@ -85,7 +85,7 @@ class MerchantSkill extends EventEmitter {
   async initDatabase() {
     this.logger.info('📦 初始化数据库...');
     
-    this.db = new Database();
+    this.db = new DatabaseManager();
     await this.db.connect();
     
     // 创建表结构

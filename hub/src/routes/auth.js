@@ -39,7 +39,7 @@ module.exports = async function (fastify, opts) {
       const token = Buffer.from(`${admin.id}:${Date.now()}`).toString('base64');
       
       // 存储到缓存
-      await cache.set(`admin_token:${token}`, JSON.stringify(admin), 3600 * 24); // 24小时
+      await cache.set(`admin_token:${token}`, JSON.stringify(admin), 'EX', 86400); // 24小时
       
       return {
         success: true,
@@ -112,7 +112,7 @@ module.exports = async function (fastify, opts) {
       await cache.set(`merchant_token:${token}`, JSON.stringify({
         id: merchant.id,
         name: merchant.name
-      }), 3600 * 24 * 30); // 30天
+      }), 'EX', 2592000); // 30天
       
       return {
         success: true,
