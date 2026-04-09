@@ -19,7 +19,7 @@ async function main() {
     logger.info('版本: 0.1.0 | 协议: A2A v0.1');
 
     // 加载配置
-    const configPath = path.join(process.cwd(), 'config', 'merchant.yaml');
+    const configPath = path.join('/web/io011/merchant-skill', 'config', 'merchant.yaml');
     const configManager = new ConfigManager(configPath);
     const config = await configManager.load();
     
