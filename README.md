@@ -3,8 +3,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-v2.2.1-blue.svg)](https://github.com/aicart-io011/releases)
 
-> **Slogan**: 我的数据我做主  
+> **Slogan**: My Data, My Rules  
 > **Architecture**: Agent-to-Agent (A2A) Commerce with Pure Navigation
+
+📖 [查看中文版本 / View Chinese Version](README_CN.md)
+
+---
 
 ## 📖 What is AICart?
 
@@ -16,13 +20,15 @@ AICart is an open **Agent-to-Agent (A2A) commerce protocol** that enables mercha
 2. **🤖 Agent Autonomy**: Both merchants and users have their own AI assistants (Skills)
 3. **🔓 Open Protocol**: Standard A2A protocol, any AI assistant can integrate
 
+---
+
 ## 🏗️ Architecture
 
 ```
 ┌───────────────────┐         ┌───────────────────┐
 │  Merchant Agent   │◄───────►│   Shopper Agent   │
 │ (io011-merchant)  │  Direct │  (io011-shopper)  │
-└─────────┬─────────┘  Connect └─────────┬─────────┘
+└─────────┬─────────┘  Connect└─────────┬─────────┘
           │                              │
           │ Register Tags                │ Query Tags
           ▼                              ▼
@@ -39,12 +45,14 @@ AICart is an open **Agent-to-Agent (A2A) commerce protocol** that enables mercha
 ### What Hub Stores vs Doesn't Store
 
 | ✅ Hub Stores | ❌ Hub NEVER Stores |
-|-------------|---------------------|
+|---|---|
 | Merchant ID | Product images |
 | Tags (categories, capabilities) | Product descriptions |
 | Connection endpoints | Inventory data |
 | Online status | Order information |
 | Reputation score | Customer data |
+
+---
 
 ## 📁 Repository Structure
 
@@ -71,6 +79,8 @@ aicart-io011/
     ├── merchant-example/       # Sample merchant setup
     └── integration-tests/      # E2E tests
 ```
+
+---
 
 ## 🚀 Quick Start
 
@@ -105,13 +115,17 @@ npm run configure
 npm start
 ```
 
+---
+
 ## 📚 Documentation
 
 | Version | Description | Link |
-|---------|-------------|------|
+|---|---|---|
 | v2.2.1 | Pure Navigation Architecture (Current) | [Feishu](https://feishu.cn/docx/GwzCd5ICfokXN3x8vA3cvgwkntd) |
 | v2.1.1 | A2A Initial Version | [Feishu](https://feishu.cn/docx/KIzOdtHCBonwSQxe0jYcHUoanDg) |
 | v1.1.1 | Legacy 3-Layer Architecture | [Feishu](...) |
+
+---
 
 ## 🤝 Contributing
 
@@ -127,6 +141,8 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 - [ ] Reputation System
 - [ ] Multi-platform Support
 
+---
+
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
@@ -138,4 +154,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-**AICart - 我的数据我做主** 🚀
+**AICart - My Data, My Rules** 🚀
