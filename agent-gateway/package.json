@@ -1,0 +1,30 @@
+{
+  "name": "enterprise-agent-gateway-foundation",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --preserve-symlinks --preserve-symlinks-main scripts/serve.mjs",
+    "bootstrap": "node --preserve-symlinks --preserve-symlinks-main scripts/bootstrap.mjs",
+    "client:prepare": "node --preserve-symlinks --preserve-symlinks-main scripts/prepare-client.mjs",
+    "client:mcp": "node --preserve-symlinks --preserve-symlinks-main --use-system-ca scripts/client-bridge.mjs",
+    "client:install": "node --preserve-symlinks --preserve-symlinks-main scripts/install-client.mjs",
+    "test": "node --preserve-symlinks --preserve-symlinks-main --test"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.4.0",
+    "@modelcontextprotocol/node": "2.1.2",
+    "@modelcontextprotocol/server": "2.4.0",
+    "jsonc-parser": "3.3.1",
+    "oidc-provider": "9.15.0",
+    "saxes": "6.0.0",
+    "smol-toml": "1.9.1",
+    "yaml": "2.9.1",
+    "yauzl": "3.4.0",
+    "zod": "4.6.7"
+  }
+}

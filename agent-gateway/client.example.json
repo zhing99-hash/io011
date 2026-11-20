@@ -1,0 +1,6 @@
+{
+  "serverUrl": "https://gateway.example.com/mcp",
+  "clientId": "enterprise-desktop",
+  "openBrowser": true,
+  "authorizationTimeoutMs": 180000
+}

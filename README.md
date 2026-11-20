@@ -1,157 +1,32 @@
-# AICart (IO011) - A2A Commerce Protocol
+# IO011 · 企业 AI 连接平台（开发预览）
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v2.2.1-blue.svg)](https://github.com/aicart-io011/releases)
+面向企业自行部署的多助手连接基础，统一接口、身份、权限及数据接入。业务 Agent 与工作流由企业独立实现。
 
-> **Slogan**: My Data, My Rules  
-> **Architecture**: Agent-to-Agent (A2A) Commerce with Pure Navigation
+当前提供 HTTPS API、平台账号、OAuth/MCP 查询、隔离上传与受限审查、网页连接管理，以及 Codex、WorkBuddy、DeepSeek Harness 的配置适配和终端安装器。
 
-📖 [查看中文版本 / View Chinese Version](README_CN.md)
+**仍处于开发联调阶段。三款助手完整实机、真实扫描器、可靠交付、独立安装运行时和生产验收尚未完成。**
 
----
+## 快速开始
 
-## 📖 What is AICart?
+需要 Node.js 24 和 pnpm 11。
 
-AICart is an open **Agent-to-Agent (A2A) commerce protocol** that enables merchants and customers to conduct business through their AI assistants, without surrendering data sovereignty to centralized platforms.
-
-### Core Principles
-
-1. **💯 Data Sovereignty**: Merchants keep 100% ownership of their product data
-2. **🤖 Agent Autonomy**: Both merchants and users have their own AI assistants (Skills)
-3. **🔓 Open Protocol**: Standard A2A protocol, any AI assistant can integrate
-
----
-
-## 🏗️ Architecture
-
-```
-┌───────────────────┐         ┌───────────────────┐
-│  Merchant Agent   │◄───────►│   Shopper Agent   │
-│ (io011-merchant)  │  Direct │  (io011-shopper)  │
-└─────────┬─────────┘  Connect└─────────┬─────────┘
-          │                              │
-          │ Register Tags                │ Query Tags
-          ▼                              ▼
-┌─────────────────────────────────────────────────────┐
-│           AICart Hub (Pure Navigation)               │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
-│  │   Registry   │ │ Tag Indexer  │ │   Router     │ │
-│  └──────────────┘ └──────────────┘ └──────────────┘ │
-│                                                      │
-│  💡 Only stores tags, NEVER stores product data!     │
-└─────────────────────────────────────────────────────┘
+```powershell
+git clone --branch next/enterprise-gateway https://github.com/zhing99-hash/io011.git
+cd io011/agent-gateway
+pnpm install --frozen-lockfile --ignore-scripts --node-linker=hoisted
+pnpm test
 ```
 
-### What Hub Stores vs Doesn't Store
+服务启动、证书与管理员初始化见[运行说明](docs/agent-gateway/06-runtime-and-authentication.md)；客户端安装见[引导安装](docs/agent-gateway/10-client-installation.md)。实际密钥、数据文件与企业配置应放在仓库外。
 
-| ✅ Hub Stores | ❌ Hub NEVER Stores |
-|---|---|
-| Merchant ID | Product images |
-| Tags (categories, capabilities) | Product descriptions |
-| Connection endpoints | Inventory data |
-| Online status | Order information |
-| Reputation score | Customer data |
+- [产品需求](docs/agent-gateway/01-product-requirements.md)
+- [开发规划](docs/agent-gateway/02-development-plan.md)
+- [实现进度与验证范围](docs/agent-gateway/03-implementation-status.md)
+- [模块完整说明](agent-gateway/README.md)
+- [代码仓库替换方案](docs/agent-gateway/11-io011-repository-transition.md)
 
----
+原 AICart 商家/购物系统与新版平台属于不同产品方向；旧版本可在原分支和 Git 历史查阅，新版不承诺旧业务接口或数据库兼容。仓库替换不代表服务器已切换。
 
-## 📁 Repository Structure
+许可证见 [LICENSE](LICENSE)。
 
-```
-aicart-io011/
-├── 📁 docs/                     # Documentation
-│   ├── v1.1.1/                 # Legacy 3-layer architecture
-│   ├── v2.1.1/                 # A2A initial version
-│   └── v2.2.1/                 # Pure navigation (current)
-├── 📁 hub/                      # Hub (Navigation Layer)
-│   ├── src/                    # Source code
-│   ├── tests/                  # Test suites
-│   └── Dockerfile             # Container config
-├── 📁 merchant-skill/           # Merchant Agent Skill
-│   ├── src/                    # Source code
-│   └── config/                 # Configuration templates
-├── 📁 shopper-skill/            # Shopper Agent Skill
-│   ├── src/                    # Source code
-│   └── config/                 # Configuration templates
-├── 📁 protocol/                 # A2A Protocol Specs
-│   ├── a2a-protocol-v1.md      # Protocol specification
-│   └── schemas/                # JSON schemas
-└── 📁 examples/                 # Example implementations
-    ├── merchant-example/       # Sample merchant setup
-    └── integration-tests/      # E2E tests
-```
-
----
-
-## 🚀 Quick Start
-
-### 1. Deploy Hub (Navigation Layer)
-
-```bash
-cd hub
-npm install
-npm run setup
-cp .env.example .env
-# Edit .env with your database config
-npm run migrate
-npm start
-```
-
-### 2. Setup Merchant Agent
-
-```bash
-cd merchant-skill
-npm install
-npm run configure
-# Follow interactive setup
-npm start
-```
-
-### 3. Setup Shopper Agent
-
-```bash
-cd shopper-skill
-npm install
-npm run configure
-npm start
-```
-
----
-
-## 📚 Documentation
-
-| Version | Description | Link |
-|---|---|---|
-| v2.2.1 | Pure Navigation Architecture (Current) | [Feishu](https://feishu.cn/docx/GwzCd5ICfokXN3x8vA3cvgwkntd) |
-| v2.1.1 | A2A Initial Version | [Feishu](https://feishu.cn/docx/KIzOdtHCBonwSQxe0jYcHUoanDg) |
-| v1.1.1 | Legacy 3-Layer Architecture | [Feishu](...) |
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Development Roadmap
-
-- [x] v2.2.1: Pure Navigation Architecture
-- [ ] Hub MVP (Week 1-2)
-- [ ] Merchant Skill (Week 3-4)
-- [ ] Shopper Skill (Week 5-6)
-- [ ] Payment Integration
-- [ ] Reputation System
-- [ ] Multi-platform Support
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgments
-
-- OpenClaw community for the AI assistant framework
-- All contributors who believe in data sovereignty
-
----
-
-**AICart - My Data, My Rules** 🚀
+本版本通过迁移分支和草稿 PR 审阅；当前默认分支仍保留旧版代码。[迁移记录](MIGRATION-NOTES.md)说明基线、验证和历史保留方式。

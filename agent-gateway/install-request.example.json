@@ -1,0 +1,8 @@
+{
+  "client": "codex",
+  "projectDir": "F:/your-client-project",
+  "connection": {
+    "serverUrl": "https://gateway.example.com/mcp",
+    "clientId": "enterprise-desktop"
+  }
+}

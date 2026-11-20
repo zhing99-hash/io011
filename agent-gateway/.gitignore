@@ -1,0 +1,9 @@
+node_modules/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+quarantine/
+oauth-secrets*.json
+*.local.json
+bootstrap-input.json
+client-packages/

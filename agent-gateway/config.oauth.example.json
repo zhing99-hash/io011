@@ -1,0 +1,18 @@
+{
+  "database": "C:/gateway-data/gateway.sqlite",
+  "quarantineDirectory": "C:/gateway-data/quarantine",
+  "publicOrigin": "https://gateway.company.example:8443",
+  "listenHost": "127.0.0.1",
+  "listenPort": 8443,
+  "tlsCertificateFile": "C:/gateway-private/tls-cert.pem",
+  "tlsPrivateKeyFile": "C:/gateway-private/tls-key.pem",
+  "allowedConnectorOrigins": ["https://workflow.company.example"],
+  "oauth": {
+    "secretsFile": "C:/gateway-private/oauth-secrets.json",
+    "clients": [{
+      "clientId": "enterprise-desktop",
+      "clientName": "企业桌面助手",
+      "redirectUris": ["http://127.0.0.1:34567/callback"]
+    }]
+  }
+}
